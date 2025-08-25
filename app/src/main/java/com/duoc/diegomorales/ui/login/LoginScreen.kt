@@ -15,7 +15,16 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Key
+import com.duoc.diegomorales.R
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.filled.Lock
+
 
 @Composable
 fun LoginScreen(
@@ -32,6 +41,11 @@ fun LoginScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally)
     {
+        Image(
+            painter = painterResource(id=R.drawable.loginicon),
+            contentDescription= "Logo de la aplicación",
+            modifier = Modifier.size(120.dp)
+        )
 
         Text(
             text = "Inicio de Sesión",
@@ -48,7 +62,11 @@ fun LoginScreen(
             onValueChange = { email = it},
             label = { Text("Correo")},
             singleLine = true,
-            placeholder = {Text("Ingresa tu Correo")}
+            placeholder = {Text("Ingresa tu Correo")},
+            leadingIcon = {
+                Icon(imageVector = Icons.Default.Email,
+                    contentDescription = "Correo")
+            }
         )
 
         Spacer( modifier = Modifier.height(15.dp))
@@ -60,10 +78,14 @@ fun LoginScreen(
             singleLine = true,
             placeholder = {Text("Ingresa tu Contraseña")},
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            leadingIcon = {
+                Icon (imageVector = Icons.Default.Key, contentDescription = "Contraseña")
+            },
             trailingIcon = {
                 val icon = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(imageVector = icon, contentDescription = if (passwordVisible) "Ocultar" else "Mostrar")
+                    Icon(imageVector = icon,
+                        contentDescription = if (passwordVisible) "Ocultar Contraseña" else "Mostrar Contraseña")
                 }
             }
         )
@@ -91,7 +113,7 @@ fun LoginScreen(
             Text("Registrarse")
         }
 
-        TextButton(onClick = onNavigateRegister, modifier = Modifier.semantics{
+        TextButton(onClick = onNavigateRecover, modifier = Modifier.semantics{
             contentDescription = "Botón de Recuperar contraseña"
         }) {
             Text("Recuperar contraseña")
