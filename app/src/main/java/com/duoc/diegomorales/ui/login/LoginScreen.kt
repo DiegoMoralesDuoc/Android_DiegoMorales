@@ -11,6 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.ui.text.input.VisualTransformation
 
 @Composable
 fun LoginScreen(
@@ -20,6 +25,7 @@ fun LoginScreen(
 ) {
     var email by remember { mutableStateOf ("") }
     var password by remember { mutableStateOf ("") }
+    var passwordVisible by remember { mutableStateOf(false) }
     var message by remember { mutableStateOf ("") }
 
     Column( modifier = Modifier.fillMaxSize().padding(15.dp),
@@ -52,7 +58,14 @@ fun LoginScreen(
             onValueChange = { password = it},
             label = { Text("Contraseña")},
             singleLine = true,
-            placeholder = {Text("Ingresa tu Contraseña")}
+            placeholder = {Text("Ingresa tu Contraseña")},
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                val icon = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(imageVector = icon, contentDescription = if (passwordVisible) "Ocultar" else "Mostrar")
+                }
+            }
         )
 
         Spacer( modifier = Modifier.height(24.dp))

@@ -9,6 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 
 @Composable
 fun RecoverPasswordScreen(
@@ -17,6 +22,7 @@ fun RecoverPasswordScreen(
 ) {
     var email  by remember { mutableStateOf("")}
     var newPassword  by remember { mutableStateOf("")}
+    var passwordVisible by remember { mutableStateOf(false) }
     var message  by remember { mutableStateOf("")}
 
     Column (modifier = Modifier.fillMaxSize().padding(15.dp),
@@ -41,7 +47,17 @@ fun RecoverPasswordScreen(
             onValueChange = {newPassword=it},
             label = {Text("Nueva Contraseña")},
             modifier = Modifier.fillMaxWidth(),
-            placeholder = {Text("Ingresa tu nueva Contraseña")}
+            placeholder = {Text("Ingresa tu nueva Contraseña")},
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                val icon = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
+                    )
+                }
+            }
         )
 
         Spacer(modifier = Modifier.height(15.dp))

@@ -8,6 +8,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 
 @Composable
 fun RegisterScreen(
@@ -17,6 +22,8 @@ fun RegisterScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
+    var confirmPasswordVisible by remember { mutableStateOf(false) }
     var message by remember { mutableStateOf("") }
 
     Column (modifier = Modifier.fillMaxSize().padding(15.dp),
@@ -41,7 +48,17 @@ fun RegisterScreen(
             onValueChange = {password = it},
             label = {Text("Contraseña")},
             modifier = Modifier.fillMaxWidth(),
-            placeholder = {Text("Ingresa tu Contraseña")}
+            placeholder = {Text("Ingresa tu Contraseña")},
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                val icon = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
+                    )
+                }
+            }
         )
 
         OutlinedTextField(
@@ -49,7 +66,17 @@ fun RegisterScreen(
             onValueChange = {confirmPassword = it},
             label = {Text("Confirmar Contraseña")},
             modifier = Modifier.fillMaxWidth(),
-            placeholder = {Text("Confirmar tu Contraseña")}
+            placeholder = {Text("Confirmar tu Contraseña")},
+            visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                val icon = if (confirmPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = if (confirmPasswordVisible) "Ocultar contraseña" else "Mostrar contraseña"
+                    )
+                }
+            }
         )
 
         Spacer(modifier = Modifier.height(15.dp))
