@@ -50,11 +50,12 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.ui.text.google.fonts)
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.9.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation(libs.androidx.material.icons.extended)
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
+
 
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
