@@ -28,13 +28,15 @@ import com.duoc.diegomorales.ui.home.HomeScreen
 import com.duoc.diegomorales.ui.login.LoginScreen
 import com.duoc.diegomorales.ui.register.RegisterScreen
 import com.duoc.diegomorales.ui.recover.RecoverPasswordScreen
+import com.duoc.diegomorales.ui.ListAllUser.ListAllUsersScreen
 
 
 object Screen {
     const val LOGIN = "login"
     const val REGISTER = "register"
     const val RECOVER = "recover"
-    const val HOME = "home"
+    const val HOME = "home/{correo}"
+    const val LIST_USERS = "list_users/{correo}"
 }
 
 class MainActivity : ComponentActivity() {
@@ -53,13 +55,11 @@ fun AppNavHost(){
 
         composable(Screen.LOGIN){
             LoginScreen(
-                onLoginSuccess = {navController.navigate(Screen.HOME)},
+                onLoginSuccess = {correo -> navController.navigate("home/$correo")},
                 onNavigateRegister = {navController.navigate(Screen.REGISTER)},
                 onNavigateRecover = {navController.navigate(Screen.RECOVER)}
             )
         }
-
-        composable(Screen.HOME){HomeScreen()}
 
         composable(Screen.REGISTER){
             RegisterScreen(
@@ -74,5 +74,26 @@ fun AppNavHost(){
                 onBackToLogin = {navController.navigate(Screen.LOGIN)}
             )
         }
+
+        composable("home/{correo}") { backStackEntry ->
+            val correo = backStackEntry.arguments?.getString("correo") ?: "Usuario"
+
+            HomeScreen(
+                correoUsuario = correo,
+                onGoHome = { navController.navigate("home/$correo") {
+                    popUpTo("home/$correo") { inclusive = true }
+                }},
+                onViewUsers = { navController.navigate("list_users/$correo") }
+            )
+        }
+
+        composable("list_users/{correo}") { backStackEntry ->
+            val correo = backStackEntry.arguments?.getString("correo") ?: "Usuario"
+            ListAllUsersScreen(
+                correoUsuario = correo,
+                onGoHome = { navController.navigate("home/$correo") }
+            )
+        }
+
     }
 }

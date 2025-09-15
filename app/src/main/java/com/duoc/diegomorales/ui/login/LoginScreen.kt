@@ -28,7 +28,7 @@ import androidx.compose.material.icons.filled.Lock
 
 @Composable
 fun LoginScreen(
-    onLoginSuccess: () -> Unit,
+    onLoginSuccess: (String) -> Unit,
     onNavigateRegister: () -> Unit,
     onNavigateRecover: () -> Unit
 ) {
@@ -95,7 +95,7 @@ fun LoginScreen(
         Button (onClick = {
             if (Manager.loginUser(email,password)){
                 message = "Inicio de sesión Exitoso"
-                onLoginSuccess()
+                onLoginSuccess(email)
             } else {
                 message = "Correo o Contraseña incorrectos"
             }

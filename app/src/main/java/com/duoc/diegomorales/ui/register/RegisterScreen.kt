@@ -83,16 +83,20 @@ fun RegisterScreen(
 
         Button(
             onClick = {
-                if(password == confirmPassword) {
-                    val success = Manager.registerUser( email,password)
-                    if (success) {
-                        message = "El registro ha sido Exitoso"
-                        onRegisterSuccess()
+                try {
+                    if(password == confirmPassword) {
+                        val success = Manager.registerUser( email,password)
+                        if (success) {
+                            message = "El registro ha sido Exitoso"
+                            onRegisterSuccess()
+                        } else {
+                            message = "El Correo ya ha sido registrado"
+                        }
                     } else {
-                        message = "El Correo ya ha sido registrado"
+                        message = "Las contraseñas ingresadas no coinciden"
                     }
-                } else {
-                    message = "Las contraseñas ingresadas no coinciden"
+                } catch (e: Exception) {
+                message = "Ocurrió un error al registrar: ${e.message}"
                 }
             }, modifier = Modifier.fillMaxWidth().semantics{
                 contentDescription = "Botón para Registrarse"

@@ -6,11 +6,11 @@ data class User(
 )
 object Manager {
     private val users = mutableListOf<User>(
-        User("diego@duoc.cl","12345"),
-        User("diegomorales@duoc.cl","diegomorales"),
-        User("diegomoralesalfaro@duoc.cl","dma_password"),
-        User("prueba@duoc.cl","prueba"),
-        User("profesor@duoc.cl","profesor")
+        User("diego@gmail.com","12345"),
+        User("diegomorales@gmail.com","diegomorales"),
+        User("diegomoralesalfaro@duocuc.cl","dma_password"),
+        User("prueba@duocuc.cl","prueba"),
+        User("profesor@duocuc.cl","profesor")
     )
 
     fun registerUser(email: String, password: String): Boolean {
@@ -34,5 +34,9 @@ object Manager {
         } else {
             false
         }
+    }
+
+    fun getAllUsersEmails(): List<String> {
+        return users.map { it.email }
     }
 }
