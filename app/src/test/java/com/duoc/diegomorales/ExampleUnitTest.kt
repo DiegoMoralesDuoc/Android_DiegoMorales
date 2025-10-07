@@ -1,17 +1,21 @@
 package com.duoc.diegomorales
 
 import org.junit.Test
-
 import org.junit.Assert.*
+import com.duoc.diegomorales.data.isGmail
+import com.duoc.diegomorales.data.isDuoc
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
 class ExampleUnitTest {
+
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun user_isGmail_or_Duoc() {
+        val gmailUser = "usuario@gmail.com"
+        val duocUser = "alumno@duocuc.cl"
+
+        assertTrue(gmailUser.isGmail())
+        assertFalse(gmailUser.isDuoc())
+
+        assertTrue(duocUser.isDuoc())
+        assertFalse(duocUser.isGmail())
     }
 }

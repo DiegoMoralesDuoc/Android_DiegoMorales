@@ -1,42 +1,79 @@
 package com.duoc.diegomorales.data
 
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import kotlinx.coroutines.tasks.await
+
 data class User(
-    val email: String,
-    val password: String
+    val email: String = "",
+    val name: String = ""
 )
+
 object Manager {
-    private val users = mutableListOf<User>(
-        User("diego@gmail.com","12345"),
-        User("diegomorales@gmail.com","diegomorales"),
-        User("diegomoralesalfaro@duocuc.cl","dma_password"),
-        User("prueba@duocuc.cl","prueba"),
-        User("profesor@duocuc.cl","profesor")
-    )
 
-    fun registerUser(email: String, password: String): Boolean {
-        if (users.any { it.email == email}){
-            return false
-        }
-        users.add(User(email, password ))
-        return true
-    }
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
 
-    fun loginUser (email: String, password: String): Boolean {
-        return users.any { it.email == email && it.password == password}
-    }
+    val currentUser get() = auth.currentUser
 
-    fun resetPassword(email: String, newPassword: String): Boolean{
-        val user = users.find {it.email == email}
-        return if (user != null) {
-            users.remove(user)
-            users.add(user.copy(password = newPassword))
+    suspend fun registerUser(email: String, password: String, name: String = "Anónimo"): Boolean {
+        return try {
+            val result = auth.createUserWithEmailAndPassword(email, password).await()
+            val userId: String = result.user?.uid ?: return false
+
+            val user = User(email = email, name = name)
+            database.getReference("users").child(userId).setValue(user).await()
+
             true
-        } else {
+        } catch (e: Exception) {
+            e.printStackTrace()
             false
         }
     }
 
-    fun getAllUsersEmails(): List<String> {
-        return users.map { it.email }
+    suspend fun loginUser(email: String, password: String): Boolean {
+        return try {
+            auth.signInWithEmailAndPassword(email, password).await()
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    suspend fun resetPassword(email: String): Boolean {
+        return try {
+            auth.sendPasswordResetEmail(email).await()
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    suspend fun getAllUsersEmails(): List<String> {
+        return try {
+            val snapshot = database.getReference("users").get().await()
+            snapshot.children.mapNotNull { it.child("email").getValue(String::class.java) }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
+    suspend fun deleteUser(email: String) {
+        try {
+            val snapshot = database.getReference("users").get().await()
+            val userId = snapshot.children.firstOrNull { it.child("email").getValue(String::class.java) == email }?.key
+            userId?.let {
+                database.getReference("users").child(it).removeValue().await()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun logout() {
+        auth.signOut()
     }
 }

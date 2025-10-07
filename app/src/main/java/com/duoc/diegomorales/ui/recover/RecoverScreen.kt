@@ -1,92 +1,74 @@
 package com.duoc.diegomorales.ui.recover
 
-import com.duoc.diegomorales.data.Manager
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.duoc.diegomorales.ui.viewmodel.UserViewModel
 
 @Composable
 fun RecoverPasswordScreen(
+    onBackToLogin: () -> Unit,
     onPasswordReset: () -> Unit,
-    onBackToLogin: () -> Unit
+    userViewModel: UserViewModel = viewModel()
 ) {
-    var email  by remember { mutableStateOf("")}
-    var newPassword  by remember { mutableStateOf("")}
-    var passwordVisible by remember { mutableStateOf(false) }
-    var message  by remember { mutableStateOf("")}
+    var email by remember { mutableStateOf("") }
+    var message by remember { mutableStateOf("") }
 
-    Column (modifier = Modifier.fillMaxSize().padding(15.dp),
+    val resetSuccess by userViewModel.resetSuccess.collectAsState()
+    val isLoading by userViewModel.isLoading.collectAsState()
+
+    // Efecto para manejar el resultado del envío de correo
+    LaunchedEffect(resetSuccess) {
+        when (resetSuccess) {
+            true -> message = "Se ha enviado un correo para restablecer tu contraseña."
+            false -> message = "Error al enviar correo de recuperación"
+            null -> Unit
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(15.dp),
         verticalArrangement = Arrangement.Center
-    ){
+    ) {
         Text("Recuperar Contraseña", style = MaterialTheme.typography.headlineMedium)
 
         Spacer(modifier = Modifier.height(15.dp))
 
         OutlinedTextField(
             value = email,
-            onValueChange = {email=it},
-            label = {Text("Correo")},
+            onValueChange = { email = it },
+            label = { Text("Correo") },
             modifier = Modifier.fillMaxWidth(),
-            placeholder = {Text("Ingresa tu Correo")}
-        )
-
-        Spacer( modifier = Modifier.height(15.dp))
-
-        OutlinedTextField(
-            value = newPassword,
-            onValueChange = {newPassword=it},
-            label = {Text("Nueva Contraseña")},
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = {Text("Ingresa tu nueva Contraseña")},
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = {
-                val icon = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
-                    )
-                }
-            }
+            placeholder = { Text("Ingresa tu Correo") }
         )
 
         Spacer(modifier = Modifier.height(15.dp))
 
         Button(
-            onClick = {
-                val success = Manager.resetPassword(email, newPassword)
-                if (success) {
-                    message = "La Contraseña ha sido Actualizada con Éxito"
-                    onPasswordReset()
-                } else {
-                    message = "El Correo no coincide"
-                }
-            },
-
-            modifier = Modifier.fillMaxWidth().semantics{
-                contentDescription = "Botón para Cambiar Contraseña"
-            }
+            onClick = { userViewModel.resetPassword(email) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .semantics { contentDescription = "Botón para Recuperar Contraseña" },
+            enabled = !isLoading
         ) {
-            Text("Cambiar Contraseña")
+            Text(if (isLoading) "Cargando..." else "Recuperar Contraseña")
         }
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        Button(onClick = onBackToLogin, modifier = Modifier.fillMaxWidth()
-                .semantics{
-                contentDescription = "Botón para volver al inicio de sesión"
-            }
-        ){
+        Button(
+            onClick = onBackToLogin,
+            modifier = Modifier
+                .fillMaxWidth()
+                .semantics { contentDescription = "Botón para volver al inicio de sesión" }
+        ) {
             Text("Volver al inicio de sesión")
         }
 

@@ -2,9 +2,8 @@ package com.duoc.diegomorales.ui.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -14,23 +13,24 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.Button
-
 
 @Composable
-fun HomeButton(onClick: () -> Unit){
+fun HomeButton(onClick: () -> Unit) {
     IconButton(onClick = onClick, modifier = Modifier.padding(16.dp)) {
         Icon(imageVector = Icons.Default.Home, contentDescription = "Ir al Home")
     }
 }
+
 @Composable
 fun HomeScreen(
     correoUsuario: String,
     onGoHome: () -> Unit,
-    onViewUsers: () -> Unit)
-{
-    Box(modifier = Modifier.fillMaxSize()) {
+    onViewUsers: () -> Unit,
+    onBuscarDispositivo: () -> Unit
+) {
+    var section by remember { mutableStateOf("main") }
 
+    Box(modifier = Modifier.fillMaxSize()) {
         HomeButton(onClick = onGoHome)
 
         Column(
@@ -53,9 +53,38 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(25.dp))
 
-            Button(onClick = onViewUsers){
-                Text("Ver Usuarios Ingresados")
+            if (section == "main") {
+                Button(onClick = { section = "escribir" }) { Text("Escribir") }
+                Spacer(modifier = Modifier.height(10.dp))
+                Button(onClick = { section = "hablar" }) { Text("Hablar") }
+                Spacer(modifier = Modifier.height(10.dp))
+                Button(onClick = onBuscarDispositivo) { Text("Buscar Dispositivo") }
+                Spacer(modifier = Modifier.height(10.dp))
+                Button(onClick = onViewUsers) { Text("Ver Usuarios Ingresados") }
+            }
+
+            when (section) {
+                "escribir" -> EscribirSection(onBack = { section = "main" })
+                "hablar" -> HablarSection(onBack = { section = "main" })
             }
         }
+    }
+}
+
+@Composable
+fun EscribirSection(onBack: () -> Unit) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("Sección Escribir", style = MaterialTheme.typography.headlineSmall)
+        Spacer(modifier = Modifier.height(10.dp))
+        Button(onClick = onBack) { Text("Volver") }
+    }
+}
+
+@Composable
+fun HablarSection(onBack: () -> Unit) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("Sección Hablar", style = MaterialTheme.typography.headlineSmall)
+        Spacer(modifier = Modifier.height(10.dp))
+        Button(onClick = onBack) { Text("Volver") }
     }
 }

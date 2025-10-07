@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "712793161285",
+    "project_id": "androidduocdma",
+    "storage_bucket": "androidduocdma.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:712793161285:android:5e85979c3cea084a73ad2c",
+        "android_client_info": {
+          "package_name": "com.duoc.diegomorales"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCszGMyGCiBuGo8cjKTy83-eRL6BuWSqp4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
